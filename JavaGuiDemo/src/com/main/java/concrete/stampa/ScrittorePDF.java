@@ -128,12 +128,12 @@ public class ScrittorePDF {
 			apriPdf(FILE);
 		} catch(FileNotFoundException e) {
 			String messaggio = "Errore: assicurarsi che il file non sia già aperto.";
-			logger.error("Errore: assicurarsi che il file non sia già aperto.\n"+e.getMessage());
+			logger.error("Errore: assicurarsi che il file non sia già aperto.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new FileNotFoundException(messaggio);
 		} catch (Exception e) {
 			String messaggio = "Errore nella creazione del file PDF.";
-			logger.error("Errore nella creazione del file PDF.\n"+e.getMessage());
+			logger.error("Errore nella creazione del file PDF.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new Exception(messaggio);
 		}
@@ -145,7 +145,7 @@ public class ScrittorePDF {
 		        File myFile = new File(file);
 		        Desktop.getDesktop().open(myFile);
 		    } catch(Exception e) {
-		    	logger.error("Errore nell'apertura del file PDF: "+e.getMessage());
+		    	logger.error("Errore nell'apertura del file PDF: "+e.getStackTrace());
 		    	throw new Exception("Errore nell'apertura del file PDF.");
 		    }
 		}
@@ -255,7 +255,7 @@ public class ScrittorePDF {
 			p[2] = 1;
 			tabella.setWidths(p);
 		} catch (DocumentException e) {
-			logger.error("Errore nell'impostazione delle dimensioni delle colonne della tabella dei dati: "+e.getMessage());
+			logger.error("Errore nell'impostazione delle dimensioni delle colonne della tabella dei dati: "+e.getStackTrace());
 			e.printStackTrace();
 			throw new DocumentException("Errore nell'impostazione delle dimensioni delle colonne della tabella dei dati.");
 		}
@@ -271,15 +271,15 @@ public class ScrittorePDF {
 			cImage.setVerticalAlignment(Element.ALIGN_TOP);
 			tabella.addCell(cImage);
 		} catch (MalformedURLException e) {
-			logger.error("Errore nella creazione della cella del logo dell'attività. URL composto in modo errato.\n"+e.getMessage());
+			logger.error("Errore nella creazione della cella del logo dell'attività. URL composto in modo errato.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new MalformedURLException("Errore nella creazione della cella del logo dell'attività. URL composto in modo errato.");
 		} catch (IOException e) {
-			logger.error("Errore nella creazione della cella del logo dell'attività. Errore IO.\n"+e.getMessage());
+			logger.error("Errore nella creazione della cella del logo dell'attività. Errore IO.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new IOException("Errore nella creazione della cella del logo dell'attività. Errore IO.");
 		} catch (BadElementException e) {
-			logger.error("Errore nella creazione della cella del logo dell'attività. Eccezione nell'elemento.\n"+e.getMessage());
+			logger.error("Errore nella creazione della cella del logo dell'attività. Eccezione nell'elemento.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new BadElementException("Errore nella creazione della cella del logo dell'attività. Eccezione nell'elemento.");
 		}
@@ -295,15 +295,15 @@ public class ScrittorePDF {
 			cImage.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			tabella.addCell(cImage);
 		} catch (MalformedURLException e) {
-			logger.error("Errore nella creazione della cella del logo di Concrete. URL composto in modo errato.\n"+e.getMessage());
+			logger.error("Errore nella creazione della cella del logo di Concrete. URL composto in modo errato.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new MalformedURLException("Errore nella creazione della cella del logo di Concrete. URL composto in modo errato.");
 		} catch (IOException e) {
-			logger.error("Errore nella creazione della cella del logo di Concrete. Errore IO.\n"+e.getMessage());
+			logger.error("Errore nella creazione della cella del logo di Concrete. Errore IO.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new IOException("Errore nella creazione della cella del logo di Concrete. Errore IO.");
 		} catch (BadElementException e) {
-			logger.error("Errore nella creazione della cella del logo di Concrete. Eccezione nell'elemento.\n"+e.getMessage());
+			logger.error("Errore nella creazione della cella del logo di Concrete. Eccezione nell'elemento.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new BadElementException("Errore nella creazione della cella del logo di Concrete. Eccezione nell'elemento.");
 		}
@@ -319,15 +319,15 @@ public class ScrittorePDF {
 			cImage.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			tabella.addCell(cImage);
 		} catch (MalformedURLException e) {
-			logger.error("Errore nella creazione della cella del logo di ItalPlastick. URL composto in modo errato.\n"+e.getMessage());
+			logger.error("Errore nella creazione della cella del logo di ItalPlastick. URL composto in modo errato.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new MalformedURLException("Errore nella creazione della cella del logo di ItalPlastick. URL composto in modo errato.");
 		} catch (IOException e) {
-			logger.error("Errore nella creazione della cella del logo di ItalPlastick. Errore IO.\n"+e.getMessage());
+			logger.error("Errore nella creazione della cella del logo di ItalPlastick. Errore IO.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new IOException("Errore nella creazione della cella del logo di ItalPlastick. Errore IO.");
 		} catch (BadElementException e) {
-			logger.error("Errore nella creazione della cella del logo di ItalPlastick. Eccezione nell'elemento.\n"+e.getMessage());
+			logger.error("Errore nella creazione della cella del logo di ItalPlastick. Eccezione nell'elemento.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new BadElementException("Errore nella creazione della cella del logo di ItalPlastick. Eccezione nell'elemento.");
 		}
@@ -350,15 +350,15 @@ public class ScrittorePDF {
 			cImage.setVerticalAlignment(Element.ALIGN_TOP);
 			tabella.addCell(cImage);
 		} catch (MalformedURLException e) {
-			logger.error("Errore nella creazione della cella del logo dell'attività. URL composto in modo errato.\n"+e.getMessage());
+			logger.error("Errore nella creazione della cella del logo dell'attività. URL composto in modo errato.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new MalformedURLException("Errore nella creazione della cella del logo dell'attività. URL composto in modo errato.");
 		} catch (IOException e) {
-			logger.error("Errore nella creazione della cella del logo dell'attività. Errore IO.\n"+e.getMessage());
+			logger.error("Errore nella creazione della cella del logo dell'attività. Errore IO.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new IOException("Errore nella creazione della cella del logo dell'attività. Errore IO.");
 		} catch (BadElementException e) {
-			logger.error("Errore nella creazione della cella del logo dell'attività. Eccezione nell'elemento.\n"+e.getMessage());
+			logger.error("Errore nella creazione della cella del logo dell'attività. Eccezione nell'elemento.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new BadElementException("Errore nella creazione della cella del logo dell'attività. Eccezione nell'elemento.");
 		}
@@ -379,7 +379,7 @@ public class ScrittorePDF {
 			p[3] = 2;
 			tabella.setWidths(p);
 		} catch (DocumentException e) {
-			logger.error("Errore nell'impostazione delle dimensioni delle colonne della tabella dei dati: "+e.getMessage());
+			logger.error("Errore nell'impostazione delle dimensioni delle colonne della tabella dei dati: "+e.getStackTrace());
 			e.printStackTrace();
 			throw new DocumentException("Errore nell'impostazione delle dimensioni delle colonne della tabella dei dati.");
 		}
@@ -447,7 +447,7 @@ public class ScrittorePDF {
 			p[2] = (float) 0.5;
 			tabella.setWidths(p);
 		} catch (DocumentException e) {
-			logger.error("Errore nell'impostazione delle dimensioni delle colonne della tabella dei servizi: "+e.getMessage());
+			logger.error("Errore nell'impostazione delle dimensioni delle colonne della tabella dei servizi: "+e.getStackTrace());
 			e.printStackTrace();
 			throw new DocumentException("Errore nell'impostazione delle dimensioni delle colonne della tabella dei servizi.");
 		}
@@ -523,7 +523,7 @@ public class ScrittorePDF {
 			p[4] = 1;
 			tabella.setWidths(p);
 		} catch (DocumentException e) {
-			logger.error("Errore nell'impostazione delle dimensioni delle colonne della tabella del prodotto: "+e.getMessage());
+			logger.error("Errore nell'impostazione delle dimensioni delle colonne della tabella del prodotto: "+e.getStackTrace());
 			e.printStackTrace();
 			throw new DocumentException("Errore nell'impostazione delle dimensioni delle colonne della tabella del prodotto: ");
 		}
@@ -549,15 +549,15 @@ public class ScrittorePDF {
 			cImage.setFixedHeight(100);
 			tabella.addCell(cImage);
 		} catch (MalformedURLException e) {
-			logger.error("Errore nella creazione della cella del logo del prodotto. URL composto in modo errato.\n"+e.getMessage());
+			logger.error("Errore nella creazione della cella del logo del prodotto. URL composto in modo errato.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new MalformedURLException("Errore nella creazione della cella del logo del prodotto. URL composto in modo errato.");
 		} catch (IOException e) {
-			logger.error("Errore nella creazione della cella del logo del prodotto. Errore IO.\n"+e.getMessage());
+			logger.error("Errore nella creazione della cella del logo del prodotto. Errore IO.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new IOException("Errore nella creazione della cella del logo del prodotto. Errore IO.");
 		} catch (BadElementException e) {
-			logger.error("Errore nella creazione della cella del logo del prodotto. Eccezione nell'elemento.\n"+e.getMessage());
+			logger.error("Errore nella creazione della cella del logo del prodotto. Eccezione nell'elemento.\n"+e.getStackTrace());
 			e.printStackTrace();
 			throw new BadElementException("Errore nella creazione della cella del logo del prodotto. Eccezione nell'elemento.");
 		}
@@ -685,7 +685,7 @@ public class ScrittorePDF {
 			p[3] = 2;
 			tabella.setWidths(p);
 		} catch (DocumentException e) {
-			logger.error("Errore nell'impostazione delle dimensioni delle colonne della tabella del prodotto: "+e.getMessage());
+			logger.error("Errore nell'impostazione delle dimensioni delle colonne della tabella del prodotto: "+e.getStackTrace());
 			e.printStackTrace();
 			throw new DocumentException("Errore nell'impostazione delle dimensioni delle colonne della tabella del prodotto.");
 		}

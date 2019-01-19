@@ -7,7 +7,7 @@ public class Constants {
 	
 	public static final String FOLDER_IMMAGINI_PRODOTTI = "/immaginiProdotti/";
 
-	public static final String LOGO_CONCRETE_PER_STAMPA = "/loghiStampa/logo concrete.jpg";	// presente nel jar, così il cliente non può cambiarlo
+	public static final String LOGO_CONCRETE_PER_STAMPA = "/loghiStampa/logo concrete.JPG";	// presente nel jar, così il cliente non può cambiarlo
 	public static final String LOGO_ITALPLASTIC_PER_STAMPA = "/loghiStampa/logo italplastick.jpg";	// presente nel jar, così il cliente non può cambiarlo
 	
 	public static final String LOGO_ATTIVITA_PER_STAMPA = "logo/logo attivita.jpg";	// il cliente può cambiarlo

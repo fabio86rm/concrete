@@ -1064,8 +1064,9 @@ public class InterfacciaPreventivi {
 		double prezzoUnitario = 0.0;
 		try {
 			prezzoUnitario = prod.calcolaPrezzo(colore, Double.parseDouble(dimLarg), Double.parseDouble(dimAlt), utileProdottiAttivita);
-			prezzoUnitario = prezzoUnitario-(prezzoUnitario*Double.parseDouble(sconto));
+			prezzoUnitario = prezzoUnitario * (100 / (100 + Double.parseDouble(sconto)));
 			prezzoUnitario = calcolaPrezzoConMontaggio(prod.getNomeProdotto(), prezzoUnitario, montaggio);
+			prezzoUnitario = Util.round(prezzoUnitario, 2);
 		} catch(NullPointerException e) {
 			logger.error("Errore: non è presente il prezzo per le dimensioni indicate\n"+e.getMessage());
 	        JOptionPane.showMessageDialog(null, prod.getNomeProdotto()+" fuori dimensioni. Contattare Concrete", "Attenzione", JOptionPane.WARNING_MESSAGE);
@@ -1197,21 +1198,21 @@ public class InterfacciaPreventivi {
 		Servizio servizio = getServizio("Sopralluogo");
 		for (Map.Entry<String, Double> singoloElementoMappa : servizio.getTabellaPrezzi().entrySet()) {
 			if(singoloElementoMappa.getValue()>=0 && singoloElementoMappa.getKey().equals(comboBoxSopralluogo.getSelectedItem().toString())) {
-				costoSopralluogo = singoloElementoMappa.getValue();
+				costoSopralluogo = singoloElementoMappa.getValue() * ((100 + utileServiziAttivita)/100);
 				break;
 			}
 		}
 		servizio = getServizio("Trasporto");
 		for (Map.Entry<String, Double> singoloElementoMappa : servizio.getTabellaPrezzi().entrySet()) {
 			if(singoloElementoMappa.getValue()>=0 && singoloElementoMappa.getKey().equals(comboBoxTrasporto.getSelectedItem().toString())) {
-				costoTrasporto = singoloElementoMappa.getValue();
+				costoTrasporto = singoloElementoMappa.getValue() * ((100 + utileServiziAttivita)/100);
 				break;
 			}
 		}
 		servizio = getServizio("Dislocazione");
 		for (Map.Entry<String, Double> singoloElementoMappa : servizio.getTabellaPrezzi().entrySet()) {
 			if(singoloElementoMappa.getValue()>=0 && singoloElementoMappa.getKey().equals(comboBoxDislocazionePiano.getSelectedItem().toString())) {
-				costoDislocazione = singoloElementoMappa.getValue();
+				costoDislocazione = singoloElementoMappa.getValue() * ((100 + utileServiziAttivita)/100);
 				break;
 			}
 		}

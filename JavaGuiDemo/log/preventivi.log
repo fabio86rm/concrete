@@ -2,3 +2,11 @@
 null
 2019-01-17 20:58:23 ERROR LettoreProperties:137 - Errore nella creazione del file PDF.
 null
+2019-01-18 16:58:39 ERROR LettoreProperties:71 - Errore nel caricamento dei prodotti/servizi: bean.Prodotto
+2019-01-18 16:58:40 ERROR LettoreProperties:82 - Errore: null
+2019-01-19 07:24:24 ERROR LettoreProperties:71 - Errore nel caricamento dei prodotti/servizi: bean.Prodotto
+2019-01-19 07:24:25 ERROR LettoreProperties:82 - Errore: null
+2019-01-19 07:31:27 ERROR LettoreProperties:71 - Errore nel caricamento dei prodotti/servizi: bean.Prodotto
+2019-01-19 07:31:27 ERROR LettoreProperties:82 - Errore: null
+2019-01-19 07:32:35 ERROR LettoreProperties:71 - Errore nel caricamento dei prodotti/servizi: bean.Servizio
+2019-01-19 07:32:36 ERROR LettoreProperties:82 - Errore: null
