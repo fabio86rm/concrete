@@ -15,6 +15,7 @@ public class Constants {
 	public static final String PATH_STAMPE = "stampe/";
 	
 	public static final double IVA_CONCRETE_A_ATTIVITA = 22.0;	// iva in percentuale che applica la Concrete a Bricofer
+	public static final double IVA_SERVIZI = 22.0;	// iva in percentuale applicata sui servizi
 	
 	public static final double SCONTO_CONCRETE_A_ATTIVITA = 3.0; // sconto in percentuale che a Concrete a Bricofer
 	
@@ -70,5 +71,8 @@ public class Constants {
 	public static final String TOTALE_IVA_ESCLUSA = "Totale IVA esclusa";
 	public static final String IVA = "IVA";
 	public static final String TOTALE = "Totale";
+	
+	public static final String ETICHETTA_PRODOTTI = "PRODOTTI";
+	public static final String ETICHETTA_SERVIZI = "SERVIZI";
 
 }

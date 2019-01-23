@@ -30,6 +30,8 @@ import com.main.java.concrete.stampa.ScrittorePDF;
 import com.main.java.concrete.utility.Constants;
 import com.main.java.concrete.utility.ConvertitoreModel;
 import com.main.java.concrete.utility.Util;
+import java.awt.Color;
+import javax.swing.SwingConstants;
 
 public class InterfacciaPreventivi {
 	
@@ -60,12 +62,12 @@ public class InterfacciaPreventivi {
 	
 	private Logger logger;
 	private JButton btnModificaElemento;
-	private JTextField textFieldTotale;
-	private JLabel lblTotale;
-	private JTextField textFieldTotaleIVA;
-	private JLabel lblTotaleIVA;
+	private JTextField textFieldTotaleProdotti;
+	private JLabel lblTotaleProdotti;
+	private JTextField textFieldTotaleProdottiIVA;
+	private JLabel lblTotaleProdottiIVA;
 	private JTextField textFieldIVA;
-	private JLabel lblIVA;
+	private JLabel lblIVAProdotti;
 	private JLabel lblPercIVA;
 	private JButton btnStampaCopiaCliente;
 	private JButton btnStampaCopiaAttivita;
@@ -110,6 +112,7 @@ public class InterfacciaPreventivi {
 	private double costoSopralluogo = 0.0;
 	private double costoTrasporto = 0.0;
 	private double costoDislocazione = 0.0;
+	private double costoMontaggio = 0.0;
 	
 	private String[] messaggioServizi; // messaggio che poi deve essere riportato nella stampa del PDF, in quanto indica se il prezzo non è completo (come ad esempio nel caso di un sopralluogo oltre i 60km)
 	
@@ -117,6 +120,8 @@ public class InterfacciaPreventivi {
 	private double utileServiziAttivita;
 	
 	private double iva;
+	private JTextField textFieldTotaleServizi;
+	private JTextField textFieldTotaleServiziIVA;
 
 //	/**
 //	 * Launch the application.
@@ -392,7 +397,22 @@ public class InterfacciaPreventivi {
 			        resettaValori(textFieldLarghezza, textFieldAltezza, textFieldAltezzaManiglia, textFieldQuantita, textFieldSconto);
 			        
 			        // calcola di nuovo il totale
-			        calcolaTotale(model, true);
+//			        calcolaTotaleProdotti(model, true);
+					double totale = calcolaTotaleProdotti(model);
+					textFieldTotaleProdotti.setText(Double.toString(totale));
+					double totaleIVA = calcolaTotaleIVA(totale, iva);
+					textFieldTotaleProdottiIVA.setText(Double.toString(totaleIVA));
+					
+					// calcola i servizi in base al montaggio
+					String montaggio = comboBoxMontaggio.getSelectedItem().toString();
+					// aggiorna il totale
+					double totaleServizi = calcolaMontaggioProdotti(model, montaggio, costoMontaggio);
+					textFieldTotaleServizi.setText(Double.toString(totaleServizi));
+					double totaleServiziIVA = calcolaTotaleIVA(totaleServizi, Constants.IVA_SERVIZI);
+					textFieldTotaleServiziIVA.setText(Double.toString(totaleServiziIVA));
+					if("NO".equals(comboBoxMontaggio.getSelectedItem().toString())) {
+						costoMontaggio = 0;
+					}
 				} else {
 					JOptionPane.showMessageDialog(null, "E' necessario valorizzare tutti i campi prima di inserire una nuova riga", "Attenzione", JOptionPane.WARNING_MESSAGE);
 				}
@@ -411,7 +431,22 @@ public class InterfacciaPreventivi {
 		        	model.removeRow(rigaSelezionata);
 			        
 			        // calcola di nuovo il totale
-		        	calcolaTotale(model, true);
+//		        	calcolaTotaleProdotti(model, true);
+					double totale = calcolaTotaleProdotti(model);
+					textFieldTotaleProdotti.setText(Double.toString(totale));
+					double totaleIVA = calcolaTotaleIVA(totale, iva);
+					textFieldTotaleProdottiIVA.setText(Double.toString(totaleIVA));
+					
+					// calcola i servizi in base al montaggio
+					String montaggio = comboBoxMontaggio.getSelectedItem().toString();
+					// aggiorna il totale
+					double totaleServizi = calcolaMontaggioProdotti(model, montaggio, costoMontaggio);
+					textFieldTotaleServizi.setText(Double.toString(totaleServizi));
+					double totaleServiziIVA = calcolaTotaleIVA(totaleServizi, Constants.IVA_SERVIZI);
+					textFieldTotaleServiziIVA.setText(Double.toString(totaleServiziIVA));
+					if("NO".equals(comboBoxMontaggio.getSelectedItem().toString())) {
+						costoMontaggio = 0;
+					}
 		        } else {
 		        	logger.warn("Non è stata selezionata alcuna riga");
 			        JOptionPane.showMessageDialog(null, "Non è stata selezionata alcuna riga", "Attenzione", JOptionPane.WARNING_MESSAGE);
@@ -455,7 +490,22 @@ public class InterfacciaPreventivi {
 		    		}
 			        
 			        // calcola di nuovo il totale
-			        calcolaTotale(model, true);
+//			        calcolaTotaleProdotti(model, true);
+					double totale = calcolaTotaleProdotti(model);
+					textFieldTotaleProdotti.setText(Double.toString(totale));
+					double totaleIVA = calcolaTotaleIVA(totale, iva);
+					textFieldTotaleProdottiIVA.setText(Double.toString(totaleIVA));
+					
+					// calcola i servizi in base al montaggio
+					String montaggio = comboBoxMontaggio.getSelectedItem().toString();
+					// aggiorna il totale
+					double totaleServizi = calcolaMontaggioProdotti(model, montaggio, costoMontaggio);
+					textFieldTotaleServizi.setText(Double.toString(totaleServizi));
+					double totaleServiziIVA = calcolaTotaleIVA(totaleServizi, Constants.IVA_SERVIZI);
+					textFieldTotaleServiziIVA.setText(Double.toString(totaleServiziIVA));
+					if("NO".equals(comboBoxMontaggio.getSelectedItem().toString())) {
+						costoMontaggio = 0;
+					}
 		        } else {
 		        	logger.warn("Non è stata selezionata alcuna riga");
 			        JOptionPane.showMessageDialog(null, "Non è stata selezionata alcuna riga", "Attenzione", JOptionPane.WARNING_MESSAGE);
@@ -464,14 +514,14 @@ public class InterfacciaPreventivi {
 		});
 		frame.getContentPane().add(btnModificaElemento);
 		
-		lblIVA = new JLabel("IVA");
+		lblIVAProdotti = new JLabel("IVA");
 		Font font = new Font("Tahoma", Font.BOLD, 11);
-		lblIVA.setFont(font);
-		lblIVA.setBounds(625, 593, 50, 14);
-		frame.getContentPane().add(lblIVA);
+		lblIVAProdotti.setFont(font);
+		lblIVAProdotti.setBounds(585, 663, 50, 14);
+		frame.getContentPane().add(lblIVAProdotti);
 		
 		textFieldIVA = new JTextField();
-		textFieldIVA.setBounds(678, 590, 108, 20);
+		textFieldIVA.setBounds(618, 660, 48, 20);
 		textFieldIVA.setText(Double.toString(iva));
 		textFieldIVA.setColumns(10);
 //		textFieldIVA.addMouseListener(new MouseAdapter() {
@@ -485,8 +535,9 @@ public class InterfacciaPreventivi {
 					JOptionPane.showMessageDialog(null, "E' necessario definire l'iva", "Attenzione", JOptionPane.WARNING_MESSAGE);
 				} else {
 					iva = Double.parseDouble(textFieldIVA.getText());
-					double totale = Double.parseDouble(textFieldTotale.getText());
-					calcolaTotaleIVA(totale);
+					double totale = Double.parseDouble(textFieldTotaleProdotti.getText());
+					double totaleIVA = calcolaTotaleIVA(totale, iva);
+					textFieldTotaleProdottiIVA.setText(Double.toString(totaleIVA));
 				}
 			}
 		});
@@ -494,63 +545,69 @@ public class InterfacciaPreventivi {
 
 		lblPercIVA = new JLabel("%");
 		lblPercIVA.setFont(font);
-		lblPercIVA.setBounds(798, 593, 20, 14);
+		lblPercIVA.setBounds(678, 663, 20, 14);
 		frame.getContentPane().add(lblPercIVA);
 		
-		lblTotale = new JLabel("Totale");
-		lblTotale.setFont(font);
-		lblTotale.setBounds(886, 593, 46, 14);
-		frame.getContentPane().add(lblTotale);
+		lblTotaleProdotti = new JLabel("Totale");
+		lblTotaleProdotti.setFont(font);
+		lblTotaleProdotti.setBounds(756, 633, 46, 14);
+		frame.getContentPane().add(lblTotaleProdotti);
 		
-		textFieldTotale = new JTextField();
-		textFieldTotale.setBounds(966, 590, 108, 20);
-		textFieldTotale.setText("0.0");
-		textFieldTotale.setColumns(10);
-        textFieldTotale.addMouseListener(new MouseAdapter() {
+		textFieldTotaleProdotti = new JTextField();
+		textFieldTotaleProdotti.setBounds(816, 630, 78, 20);
+		textFieldTotaleProdotti.setText("0.0");
+		textFieldTotaleProdotti.setColumns(10);
+        textFieldTotaleProdotti.addMouseListener(new MouseAdapter() {
         	public void mouseClicked(MouseEvent e) {
         		JOptionPane.showMessageDialog(null, "Stai per modificare manualmente il prezzo totale!\nUna volta modificato, non è possibile tornare indietro", "Attenzione", JOptionPane.WARNING_MESSAGE);
         	}
 		});
-        textFieldTotale.addActionListener(new ActionListener() {
+        textFieldTotaleProdotti.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				double totale = Double.parseDouble(textFieldTotale.getText());
-				calcolaTotaleIVA(totale);
+				double totale = Double.parseDouble(textFieldTotaleProdotti.getText());
+				double totaleIVA = calcolaTotaleIVA(totale, iva);
+				textFieldTotaleProdottiIVA.setText(Double.toString(totaleIVA));
 			}
 		});
-		frame.getContentPane().add(textFieldTotale);
+		frame.getContentPane().add(textFieldTotaleProdotti);
 		
-		lblTotaleIVA = new JLabel("Totale + IVA");
-		lblTotaleIVA.setFont(font);
-		lblTotaleIVA.setBounds(850, 623, 80, 14);
-		frame.getContentPane().add(lblTotaleIVA);
+		lblTotaleProdottiIVA = new JLabel("Totale + IVA");
+		lblTotaleProdottiIVA.setFont(font);
+		lblTotaleProdottiIVA.setBounds(720, 663, 80, 14);
+		frame.getContentPane().add(lblTotaleProdottiIVA);
 		
-		textFieldTotaleIVA = new JTextField();
-		textFieldTotaleIVA.setBounds(966, 620, 108, 20);
-		textFieldTotaleIVA.setText("0.0");
-		textFieldTotaleIVA.setColumns(10);
-		textFieldTotaleIVA.addMouseListener(new MouseAdapter() {
+		textFieldTotaleProdottiIVA = new JTextField();
+		textFieldTotaleProdottiIVA.setBounds(816, 660, 78, 20);
+		textFieldTotaleProdottiIVA.setText("0.0");
+		textFieldTotaleProdottiIVA.setColumns(10);
+		textFieldTotaleProdottiIVA.addMouseListener(new MouseAdapter() {
         	public void mouseClicked(MouseEvent e) {
         		JOptionPane.showMessageDialog(null, "Stai per modificare manualmente il prezzo totale!\nUna volta modificato, non è possibile tornare indietro", "Attenzione", JOptionPane.WARNING_MESSAGE);
         	}
 		});
-		textFieldTotaleIVA.addActionListener(new ActionListener() {
+		textFieldTotaleProdottiIVA.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				double totale = Double.parseDouble(textFieldTotale.getText());
-				calcolaTotale(model, false);
+				double totale = Double.parseDouble(textFieldTotaleProdottiIVA.getText());
+//				calcolaTotaleProdotti(model, false);
+				totale = calcolaTotaleEscludendoIVA(totale, iva);
+				textFieldTotaleProdotti.setText(Double.toString(totale));
 			}
 		});
-		frame.getContentPane().add(textFieldTotaleIVA);
+		frame.getContentPane().add(textFieldTotaleProdottiIVA);
 		
-		btnStampaCopiaCliente = new JButton("Crea Copia Cliente");
-		btnStampaCopiaCliente.setBounds(90, 601, 199, 58);
+		btnStampaCopiaCliente = new JButton("Copia Cliente");
+		btnStampaCopiaCliente.setBounds(20, 620, 199, 58);
 		btnStampaCopiaCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				ConvertitoreModel convertitore = new ConvertitoreModel(model, listaProdotti);
 				Vector<RigaModel> modelVettore = convertitore.fromModeltoVectorCopiaCliente();
 				
-				double totale = Double.parseDouble(textFieldTotale.getText());
-				double totaleIva = Double.parseDouble(textFieldTotaleIVA.getText());
+				double totaleProdotti = Double.parseDouble(textFieldTotaleProdotti.getText());
+				double totaleProdottiIva = Double.parseDouble(textFieldTotaleProdottiIVA.getText());
+				
+				double totaleServizi = Double.parseDouble(textFieldTotaleServizi.getText());
+				double totaleServiziIva = Double.parseDouble(textFieldTotaleServiziIVA.getText());
 				
 				String[] servizi = new String[4];
 				Servizio sopralluogo = getServizio("Sopralluogo");
@@ -595,7 +652,7 @@ public class InterfacciaPreventivi {
 				}
 				
 				if(stampa && modelVettore.size()>0) {
-					ScrittorePDF scrittore = new ScrittorePDF(modelVettore, totale, totaleIva, iva, servizi, prezziServizi, datiCliente, coloreManiglia, sensoApertura, logger, true);
+					ScrittorePDF scrittore = new ScrittorePDF(modelVettore, totaleProdotti, totaleProdottiIva, totaleServizi, totaleServiziIva, iva, servizi, prezziServizi, datiCliente, coloreManiglia, sensoApertura, logger, true);
 					try {
 						scrittore.creaPreventivi();
 					} catch(Exception ex) {
@@ -610,16 +667,19 @@ public class InterfacciaPreventivi {
 		});
 		frame.getContentPane().add(btnStampaCopiaCliente);
 
-		btnStampaCopiaAttivita = new JButton("Crea Copia Bricofer");
-		btnStampaCopiaAttivita.setBounds(354, 601, 199, 58);
+		btnStampaCopiaAttivita = new JButton("Copia Bricofer");
+		btnStampaCopiaAttivita.setBounds(264, 620, 199, 58);
 		btnStampaCopiaAttivita.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				ConvertitoreModel convertitore = new ConvertitoreModel(model, listaProdotti, utileProdottiAttivita, utileServiziAttivita);
 				Vector<RigaModel> modelVettore = convertitore.fromModeltoVectorCopiaAttivita();
 				
-				double totale = Double.parseDouble(textFieldTotale.getText());
-				double totaleIva = Double.parseDouble(textFieldTotaleIVA.getText());
+				double totaleProdotti = Double.parseDouble(textFieldTotaleProdotti.getText());
+				double totaleProdottiIva = Double.parseDouble(textFieldTotaleProdottiIVA.getText());
+				
+				double totaleServizi = Double.parseDouble(textFieldTotaleServizi.getText());
+				double totaleServiziIva = Double.parseDouble(textFieldTotaleServiziIVA.getText());
 				
 				String[] servizi = new String[4];
 				Servizio sopralluogo = getServizio("Sopralluogo");
@@ -665,7 +725,7 @@ public class InterfacciaPreventivi {
 				
 				if(stampa && modelVettore.size()>0) {
 //					ScrittorePDF scrittore = new ScrittorePDF(modelVettore, totale, totaleIva, iva, servizi, prezziServizi, datiCliente, coloreManiglia, sensoApertura, logger, false);
-					ScrittorePDF scrittore = new ScrittorePDF(modelVettore, totale, totaleIva, Constants.IVA_CONCRETE_A_ATTIVITA, servizi, prezziServizi, datiCliente, coloreManiglia, sensoApertura, logger, false);
+					ScrittorePDF scrittore = new ScrittorePDF(modelVettore, totaleProdotti, totaleProdottiIva, totaleServizi, totaleServiziIva, Constants.IVA_CONCRETE_A_ATTIVITA, servizi, prezziServizi, datiCliente, coloreManiglia, sensoApertura, logger, false);
 					try {
 						scrittore.creaPreventivi();
 					} catch(Exception ex) {
@@ -842,7 +902,10 @@ public class InterfacciaPreventivi {
 					prezzoServizio = prezzoServizio * ((100 + utileServiziAttivita)/100);
 					String descrizioneServizio = comboBoxSopralluogo.getSelectedItem().toString();
 					String primoElementoServizio = "No " + nomeServizio;
-					aggiornaTotaleServizio(sopralluogoSelezionato, servizio, costoSopralluogo, prezzoServizio, descrizioneServizio, primoElementoServizio);
+					double totaleServizi = calcolaTotaleServizi(sopralluogoSelezionato, servizio, costoSopralluogo, prezzoServizio, descrizioneServizio, primoElementoServizio);
+					textFieldTotaleServizi.setText(Double.toString(totaleServizi));
+					double totaleServiziIVA = calcolaTotaleIVA(totaleServizi, Constants.IVA_CONCRETE_A_ATTIVITA);
+					textFieldTotaleServiziIVA.setText(Double.toString(totaleServiziIVA));
 					if(primoElementoServizio.equals(comboBoxSopralluogo.getSelectedItem().toString())) {
 						costoSopralluogo = 0;
 						sopralluogoSelezionato = false;
@@ -881,7 +944,10 @@ public class InterfacciaPreventivi {
 					prezzoServizio = prezzoServizio * ((100 + utileServiziAttivita)/100);
 					String descrizioneServizio = comboBoxTrasporto.getSelectedItem().toString();
 					String primoElementoServizio = "No " + nomeServizio;
-					aggiornaTotaleServizio(trasportoSelezionato, servizio, costoTrasporto, prezzoServizio, descrizioneServizio, primoElementoServizio);
+					double totaleServizi = calcolaTotaleServizi(trasportoSelezionato, servizio, costoTrasporto, prezzoServizio, descrizioneServizio, primoElementoServizio);
+					textFieldTotaleServizi.setText(Double.toString(totaleServizi));
+					double totaleServiziIVA = calcolaTotaleIVA(totaleServizi, Constants.IVA_CONCRETE_A_ATTIVITA);
+					textFieldTotaleServiziIVA.setText(Double.toString(totaleServiziIVA));
 					if(primoElementoServizio.equals(comboBoxTrasporto.getSelectedItem().toString())) {
 						costoTrasporto = 0;
 						trasportoSelezionato = false;
@@ -921,7 +987,10 @@ public class InterfacciaPreventivi {
 					prezzoServizio = prezzoServizio * ((100 + utileServiziAttivita)/100);
 					String descrizioneServizio = comboBoxDislocazionePiano.getSelectedItem().toString();
 					String primoElementoServizio = "No " + nomeServizio;
-					aggiornaTotaleServizio(dislocazioneSelezionato, servizio, costoDislocazione, prezzoServizio, descrizioneServizio, primoElementoServizio);
+					double totaleServizi = calcolaTotaleServizi(dislocazioneSelezionato, servizio, costoDislocazione, prezzoServizio, descrizioneServizio, primoElementoServizio);
+					textFieldTotaleServizi.setText(Double.toString(totaleServizi));
+					double totaleServiziIVA = calcolaTotaleIVA(totaleServizi, Constants.IVA_CONCRETE_A_ATTIVITA);
+					textFieldTotaleServiziIVA.setText(Double.toString(totaleServiziIVA));
 					if(primoElementoServizio.equals(comboBoxDislocazionePiano.getSelectedItem().toString())) {
 						costoDislocazione = 0;
 						dislocazioneSelezionato = false;
@@ -940,21 +1009,78 @@ public class InterfacciaPreventivi {
 		frame.getContentPane().add(comboBoxMontaggio);
 		comboBoxMontaggio.addItem("NO");
 		comboBoxMontaggio.addItem("SI");
-		
 		comboBoxMontaggio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// aggiorna tutti i prezzi della tabella
-				aggiornaPrezzoUnitarioESubTotale(model, comboBoxMontaggio.getSelectedItem().toString());
-				if("SI".equals(comboBoxMontaggio.getSelectedItem().toString())) {
-					montaggioSelezionato = true;
-				} else {
-					montaggioSelezionato = false;
+				String montaggio = comboBoxMontaggio.getSelectedItem().toString();
+				// aggiorna il totale
+				double totaleServizi = calcolaMontaggioProdotti(model, montaggio, costoMontaggio);
+				textFieldTotaleServizi.setText(Double.toString(totaleServizi));
+				double totaleServiziIVA = calcolaTotaleIVA(totaleServizi, Constants.IVA_CONCRETE_A_ATTIVITA);
+				textFieldTotaleServiziIVA.setText(Double.toString(totaleServiziIVA));
+				if("NO".equals(comboBoxMontaggio.getSelectedItem().toString())) {
+					costoMontaggio = 0;
 				}
-
-		        // calcola di nuovo il totale
-		        calcolaTotale(model, true);
 			}
 		});
+//		comboBoxMontaggio.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				// aggiorna tutti i prezzi della tabella
+//				aggiornaPrezzoUnitarioESubTotale(model, comboBoxMontaggio.getSelectedItem().toString());
+//				if("SI".equals(comboBoxMontaggio.getSelectedItem().toString())) {
+//					montaggioSelezionato = true;
+//				} else {
+//					montaggioSelezionato = false;
+//				}
+//
+//		        // calcola di nuovo il totale
+////		        calcolaTotaleProdotti(model, true);
+//				double totale = calcolaTotaleProdotti(model);
+//				textFieldTotaleProdotti.setText(Double.toString(totale));
+//				textFieldTotaleProdottiIVA.setText(Double.toString(calcolaTotaleIVA(totale, iva)));
+//				
+//			}
+//		});
+		
+		JLabel lblNewLabel = new JLabel("Totale");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNewLabel.setBounds(960, 633, 46, 14);
+		frame.getContentPane().add(lblNewLabel);
+		
+		JLabel lblTotaleIva = new JLabel("Totale + IVA");
+		lblTotaleIva.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblTotaleIva.setBounds(924, 663, 80, 14);
+		frame.getContentPane().add(lblTotaleIva);
+		
+		textFieldTotaleServizi = new JTextField();
+		textFieldTotaleServizi.setText("0.0");
+		textFieldTotaleServizi.setEditable(false);
+		textFieldTotaleServizi.setBounds(1012, 630, 70, 20);
+		frame.getContentPane().add(textFieldTotaleServizi);
+		textFieldTotaleServizi.setColumns(10);
+		
+		textFieldTotaleServiziIVA = new JTextField();
+		textFieldTotaleServiziIVA.setText("0.0");
+		textFieldTotaleServiziIVA.setEditable(false);
+		textFieldTotaleServiziIVA.setBounds(1012, 660, 70, 20);
+		frame.getContentPane().add(textFieldTotaleServiziIVA);
+		textFieldTotaleServiziIVA.setColumns(10);
+		
+		JLabel lblProdotti = new JLabel("PRODOTTI");
+		lblProdotti.setForeground(Color.GRAY);
+		lblProdotti.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		lblProdotti.setBounds(704, 600, 100, 14);
+		frame.getContentPane().add(lblProdotti);
+		
+		JLabel lblServizi_1 = new JLabel("SERVIZI");
+		lblServizi_1.setForeground(Color.GRAY);
+		lblServizi_1.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		lblServizi_1.setBounds(970, 600, 100, 14);
+		frame.getContentPane().add(lblServizi_1);
+		
+		JSeparator separator_2 = new JSeparator();
+		separator_2.setOrientation(SwingConstants.VERTICAL);
+		separator_2.setBounds(909, 601, 1, 100);
+		frame.getContentPane().add(separator_2);
         
 	}
 
@@ -1065,7 +1191,7 @@ public class InterfacciaPreventivi {
 		try {
 			prezzoUnitario = prod.calcolaPrezzo(colore, Double.parseDouble(dimLarg), Double.parseDouble(dimAlt), utileProdottiAttivita);
 			prezzoUnitario = prezzoUnitario * (100 / (100 + Double.parseDouble(sconto)));
-			prezzoUnitario = calcolaPrezzoConMontaggio(prod.getNomeProdotto(), prezzoUnitario, montaggio);
+//			prezzoUnitario = calcolaPrezzoConMontaggio(prod.getNomeProdotto(), prezzoUnitario, montaggio);
 			prezzoUnitario = Util.round(prezzoUnitario, 2);
 		} catch(NullPointerException e) {
 			logger.error("Errore: non è presente il prezzo per le dimensioni indicate\n"+e.getMessage());
@@ -1175,78 +1301,93 @@ public class InterfacciaPreventivi {
 	 * @param model
 	 * @param montaggio
 	 */
-	public double calcolaPrezzoConMontaggio(String prodotto, double prezzoUnitario, String montaggio) {
-		if("SI".equals(montaggio)) {
-			for(int j=0; j<listaProdotti.size(); j++) {
-				if(prodotto.equals(listaProdotti.get(j).getNomeProdotto())) {
-					double costoMontaggioProdotto = listaProdotti.get(j).getCostoMontaggio();
-					prezzoUnitario = prezzoUnitario + costoMontaggioProdotto;
-					break;
-				}
-			}
-		}
-		return prezzoUnitario;
-	}
+//	public double calcolaPrezzoConMontaggio(String prodotto, double prezzoUnitario, String montaggio) {
+//		if("SI".equals(montaggio)) {
+//			for(int j=0; j<listaProdotti.size(); j++) {
+//				if(prodotto.equals(listaProdotti.get(j).getNomeProdotto())) {
+//					double costoMontaggioProdotto = listaProdotti.get(j).getCostoMontaggio();
+//					prezzoUnitario = prezzoUnitario + costoMontaggioProdotto;
+//					break;
+//				}
+//			}
+//		}
+//		return prezzoUnitario;
+//	}
 	
 	/**
 	 * calcola il prezzo totale quando viene aggiunta una nuova riga
 	 * @param model
 	 * @return
 	 */
-	public void calcolaTotale(DefaultTableModel model, boolean ricalcolaIVA) {
+	public double calcolaTotaleProdotti(DefaultTableModel model) {
 		double totale = 0.0;
-		Servizio servizio = getServizio("Sopralluogo");
-		for (Map.Entry<String, Double> singoloElementoMappa : servizio.getTabellaPrezzi().entrySet()) {
-			if(singoloElementoMappa.getValue()>=0 && singoloElementoMappa.getKey().equals(comboBoxSopralluogo.getSelectedItem().toString())) {
-				costoSopralluogo = singoloElementoMappa.getValue() * ((100 + utileServiziAttivita)/100);
-				break;
-			}
-		}
-		servizio = getServizio("Trasporto");
-		for (Map.Entry<String, Double> singoloElementoMappa : servizio.getTabellaPrezzi().entrySet()) {
-			if(singoloElementoMappa.getValue()>=0 && singoloElementoMappa.getKey().equals(comboBoxTrasporto.getSelectedItem().toString())) {
-				costoTrasporto = singoloElementoMappa.getValue() * ((100 + utileServiziAttivita)/100);
-				break;
-			}
-		}
-		servizio = getServizio("Dislocazione");
-		for (Map.Entry<String, Double> singoloElementoMappa : servizio.getTabellaPrezzi().entrySet()) {
-			if(singoloElementoMappa.getValue()>=0 && singoloElementoMappa.getKey().equals(comboBoxDislocazionePiano.getSelectedItem().toString())) {
-				costoDislocazione = singoloElementoMappa.getValue() * ((100 + utileServiziAttivita)/100);
-				break;
-			}
-		}
 		for(int i=0; i<model.getDataVector().size(); i++) {
 			double prezzoRiga = Double.parseDouble(model.getValueAt(i, model.getColumnCount()-1).toString());
 			totale = totale + prezzoRiga;
 		}
 		
-		totale = Util.round(totale+costoSopralluogo+costoTrasporto+costoDislocazione, 2);
-		if(ricalcolaIVA) {
-			calcolaTotaleIVA(totale);
-		}
+		totale = Util.round(totale, 2);
 		
-		textFieldTotale.setText(Double.toString(totale));
-		
-//		return totale;
+		return totale;
 	}
 	
-	public void calcolaTotaleIVA(double totale) {
+	/**
+	 * calcola il prezzo del servizio di montaggio quando viene aggiunta una nuova riga
+	 * @param model
+	 * @return
+	 */
+	public double calcolaMontaggioProdotti(DefaultTableModel model, String montaggio, double costoMontaggioPrecedente) {
+		double totaleServizi = Double.parseDouble(textFieldTotaleServizi.getText());
+		totaleServizi = totaleServizi-costoMontaggioPrecedente;
+		if("SI".equals(montaggio)) {
+			costoMontaggio = 0.0;
+			for(int i=0; i<model.getDataVector().size(); i++) {
+				String prodotto = model.getValueAt(i, 0).toString();
+				for(int j=0; j<listaProdotti.size(); j++) {
+					if(prodotto.equals(listaProdotti.get(j).getNomeProdotto())) {
+						double costoMontaggioProdotto = listaProdotti.get(j).getCostoMontaggio();
+						costoMontaggioProdotto = costoMontaggioProdotto * ((100 + utileServiziAttivita)/100);
+						costoMontaggio += costoMontaggioProdotto;
+						totaleServizi = totaleServizi + costoMontaggioProdotto;
+						break;
+					}
+				}
+			}
+		}
+		
+		totaleServizi = Util.round(totaleServizi, 2);
+		
+		return totaleServizi;
+	}
+	
+	public double calcolaTotaleIVA(double totale, double iva) {
 		double totaleIVA = Util.round(totale * ((100 + iva) / 100), 2);
-		textFieldTotaleIVA.setText(Double.toString(totaleIVA));
+		return totaleIVA;
+	}
+	
+	/**
+	 * Metodo che permette di calcolare il totaleNoIVA a partire dal prezzo totaleIVA.
+	 * Viene utilizzato nel caso in cui si modifica il prezzo totaleIVA, pertanto è
+	 * necessario ricalcolare il prezzo totaleNoIVA
+	 * 
+	 * @param totale
+	 * @param iva
+	 * @return
+	 */
+	public double calcolaTotaleEscludendoIVA(double totale, double iva) {
+		double totaleIVA = Util.round(totale * (100 / (100 + iva)), 2);
+		return totaleIVA;
 	}
 
-	public void aggiornaTotaleServizio(boolean servizioSelezionato, Servizio servizio, double prezzoServizioSelezionatoPrecedente, double prezzoServizioSelezionato, String descrizioneServizioSelezionato, String primoElementoServizio) {
-		double totale = Double.parseDouble(textFieldTotale.getText());
+	public double calcolaTotaleServizi(boolean servizioSelezionato, Servizio servizio, double prezzoServizioSelezionatoPrecedente, double prezzoServizioSelezionato, String descrizioneServizioSelezionato, String primoElementoServizio) {
+		double totale = Double.parseDouble(textFieldTotaleServizi.getText());
 		totale = totale-prezzoServizioSelezionatoPrecedente;
 		if(!primoElementoServizio.equals(descrizioneServizioSelezionato)) {
 			totale = totale+prezzoServizioSelezionato;
 		}
 		
-		calcolaTotaleIVA(totale);
-		
 		totale = Util.round(totale, 2);
-		textFieldTotale.setText(Double.toString(totale));
+		
+		return totale;
 	}
-	
 }

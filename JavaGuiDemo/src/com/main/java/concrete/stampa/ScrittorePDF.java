@@ -51,9 +51,11 @@ public class ScrittorePDF {
 	private static Font boldFontEtichetteTabProdotto = new Font(Font.FontFamily.HELVETICA, 11, Font.BOLDITALIC);
 	
 	private static Vector<RigaModel> righeTabella;
-	private static double totale;
-	private static double totaleIva;
+	private static double totaleProdotti;
+	private static double totaleProdottiIva;
 	private static double iva;
+	private static double totaleServizi;
+	private static double totaleServiziIva;
 	
 	private static String[] servizi;
 	private static String[] prezziServizi;
@@ -68,11 +70,13 @@ public class ScrittorePDF {
 	
 	private static Logger logger;
 	
-	public ScrittorePDF(Vector<RigaModel> righeTabella, double totale, double totaleIva, double iva, String[] servizi, String[] prezziServizi, String[] datiCliente, String coloreManiglia, String sensoAperturaManiglia, Logger logger, boolean copiaCliente) {
+	public ScrittorePDF(Vector<RigaModel> righeTabella, double totaleProdotti, double totaleProdottiIva, double totaleServizi, double totaleServiziIva, double iva, String[] servizi, String[] prezziServizi, String[] datiCliente, String coloreManiglia, String sensoAperturaManiglia, Logger logger, boolean copiaCliente) {
 		this.righeTabella = righeTabella;
-		this.totale = totale;
-		this.totaleIva = totaleIva;
+		this.totaleProdotti = totaleProdotti;
+		this.totaleProdottiIva = totaleProdottiIva;
 		this.iva = iva;
+		this.totaleServizi = totaleServizi;
+		this.totaleServiziIva = totaleServiziIva;
 		this.servizi = servizi;
 		this.prezziServizi = prezziServizi;
 		this.datiCliente = datiCliente;
@@ -191,7 +195,7 @@ public class ScrittorePDF {
 //		creaTabellaPreventivo(sectionParagraph2);
 		for(int i=0; i<righeTabella.size(); i++) {
 			Paragraph sectionTmp = new Paragraph();
-			aggiungiLineaVuota(sectionTmp, 4);
+			aggiungiLineaVuota(sectionTmp, 3);
 			PdfPTable tabellaProdotti = creaTabellaProdotto(righeTabella.get(i));
 			sectionTmp.add(tabellaProdotti);
 			if(i<righeTabella.size()-1 && i%2!=0) {
@@ -209,6 +213,12 @@ public class ScrittorePDF {
 		aggiungiLineaVuota(sectionTotale, 2);
 		sectionTotale.add(tabellaTotale);
 		document.add(sectionTotale);
+		
+		PdfPTable tabellaFirma = creaTabellaFirma();
+		Paragraph sectionFirma = new Paragraph();
+		aggiungiLineaVuota(sectionFirma, 1);
+		sectionFirma.add(tabellaFirma);
+		document.add(sectionFirma);
 		
 	}
 	
@@ -672,17 +682,216 @@ public class ScrittorePDF {
 		return tabella;
 	}
 	
+//	public static PdfPTable creaTabellaTotale() throws DocumentException {
+//		
+//		PdfPTable tabella = new PdfPTable(6);
+//		tabella.setWidthPercentage(100);
+//		// imposto la dimensione delle colonne
+//		try {
+//			int[] p = new int[6];
+//			p[0] = 2;
+//			p[1] = 1;
+//			p[2] = 2;
+//			p[3] = 2;
+//			p[4] = 1;
+//			p[5] = 2;
+//			tabella.setWidths(p);
+//		} catch (DocumentException e) {
+//			logger.error("Errore nell'impostazione delle dimensioni delle colonne della tabella del prodotto: "+e.getStackTrace());
+//			e.printStackTrace();
+//			throw new DocumentException("Errore nell'impostazione delle dimensioni delle colonne della tabella del prodotto.");
+//		}
+//		
+//		PdfPCell c1 = new PdfPCell(new Phrase(Constants.FIRMA_PER_ACCETTAZIONE, boldFontDati));
+//		c1.setHorizontalAlignment(Element.ALIGN_LEFT);
+////		c1.setGrayFill(0.8f);
+//		tabella.addCell(c1);
+//
+//		c1 = new PdfPCell();
+//		c1.setBorder(Rectangle.NO_BORDER);
+//		c1.setColspan(3);
+//		tabella.addCell(c1);
+//		
+//		c1 = new PdfPCell(new Phrase("", boldFontDati));
+//		c1.setRowspan(2);
+//		tabella.addCell(c1);
+//		
+//		Phrase phraseEticTotaleIvaEsclusaProdotto = new Phrase(Constants.TOTALE_IVA_ESCLUSA, boldFontEtichetteTabProdotto );
+//		PdfPCell cella = new PdfPCell(phraseEticTotaleIvaEsclusaProdotto);
+//		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//		tabella.addCell(cella);
+//		Phrase phraseEticIVAProdotto = new Phrase(Constants.IVA, boldFontEtichetteTabProdotto );
+//		cella = new PdfPCell(phraseEticIVAProdotto);
+//		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//		tabella.addCell(cella);
+//		Phrase phraseEticTotaleProdotto = new Phrase(Constants.TOTALE, boldFontEtichetteTabProdotto );
+//		cella = new PdfPCell(phraseEticTotaleProdotto);
+//		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//		tabella.addCell(cella);
+//		
+////		DecimalFormat df2 = new DecimalFormat(".##");
+//		
+////		double iva = Double.parseDouble(prop.getProperty("iva"));
+//		
+//		double totalePerStampa = calcolaTotalePerStampa();
+////		double totNoIva = totalePerStampa*100/(100 + iva);
+////		String totaleNoIva = "€ " + df2.format(totNoIva);
+//		String totaleNoIva = "€ " + totalePerStampa;
+//		Phrase phraseTotaleNoIva = new Phrase(totaleNoIva, fontRighe );
+//		cella = new PdfPCell(phraseTotaleNoIva);
+//		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//		tabella.addCell(cella);
+//		
+//		Phrase phraseIVA = new Phrase(iva + " %", fontRighe );
+//		cella = new PdfPCell(phraseIVA);
+//		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//		tabella.addCell(cella);
+//		
+//		double totaleIvaPerStampa = calcolaTotaleIvaPerStampa();
+//		String totaleIva = "€ " + totaleIvaPerStampa;
+////		double totaleIva = totale * ((100 + iva) / 100);
+////		totaleIva = Util.round(totaleIva, 2);
+////		String totaleIvaStr = "€ " + totaleIva;
+//		Phrase phraseTotaleIVA = new Phrase(totaleIva, fontRighe );
+//		cella = new PdfPCell(phraseTotaleIVA);
+//		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//		tabella.addCell(cella);
+//		
+//		return tabella;
+//	}
+	
 	public static PdfPTable creaTabellaTotale() throws DocumentException {
+		
+		PdfPTable tabella = new PdfPTable(6);
+		tabella.setWidthPercentage(100);
+		// imposto la dimensione delle colonne
+		try {
+			int[] p = new int[6];
+			p[0] = 3;
+			p[1] = 1;
+			p[2] = 2;
+			p[3] = 3;
+			p[4] = 1;
+			p[5] = 2;
+			tabella.setWidths(p);
+		} catch (DocumentException e) {
+			logger.error("Errore nell'impostazione delle dimensioni delle colonne della tabella del prodotto: "+e.getStackTrace());
+			e.printStackTrace();
+			throw new DocumentException("Errore nell'impostazione delle dimensioni delle colonne della tabella del prodotto.");
+		}
+		
+		PdfPCell c1 = new PdfPCell(new Phrase(Constants.ETICHETTA_PRODOTTI, boldFontDati));
+		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		c1.setColspan(3);
+		tabella.addCell(c1);
+		
+		PdfPCell c2 = new PdfPCell(new Phrase(Constants.ETICHETTA_SERVIZI, boldFontDati));
+		c2.setHorizontalAlignment(Element.ALIGN_CENTER);
+		c2.setColspan(3);
+		tabella.addCell(c2);
+
+//		c1 = new PdfPCell();
+//		c1.setBorder(Rectangle.NO_BORDER);
+//		c1.setColspan(3);
+//		tabella.addCell(c1);
+		
+//		c1 = new PdfPCell(new Phrase("", boldFontDati));
+//		c1.setRowspan(2);
+//		tabella.addCell(c1);
+		
+		// prodotti
+		Phrase phraseEticTotaleIvaEsclusaProdotti = new Phrase(Constants.TOTALE_IVA_ESCLUSA, boldFontEtichetteTabProdotto );
+		PdfPCell cella = new PdfPCell(phraseEticTotaleIvaEsclusaProdotti);
+		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tabella.addCell(cella);
+		Phrase phraseEticIVAProdotti = new Phrase(Constants.IVA, boldFontEtichetteTabProdotto );
+		cella = new PdfPCell(phraseEticIVAProdotti);
+		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tabella.addCell(cella);
+		Phrase phraseEticTotaleProdotti = new Phrase(Constants.TOTALE, boldFontEtichetteTabProdotto );
+		cella = new PdfPCell(phraseEticTotaleProdotti);
+		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tabella.addCell(cella);
+		
+		// servizi
+		Phrase phraseEticTotaleIvaEsclusaServizi = new Phrase(Constants.TOTALE_IVA_ESCLUSA, boldFontEtichetteTabProdotto );
+		cella = new PdfPCell(phraseEticTotaleIvaEsclusaServizi);
+		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tabella.addCell(cella);
+		Phrase phraseEticIVAServizi = new Phrase(Constants.IVA, boldFontEtichetteTabProdotto );
+		cella = new PdfPCell(phraseEticIVAServizi);
+		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tabella.addCell(cella);
+		Phrase phraseEticTotaleServizi = new Phrase(Constants.TOTALE, boldFontEtichetteTabProdotto );
+		cella = new PdfPCell(phraseEticTotaleServizi);
+		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tabella.addCell(cella);
+		
+		// ------ prodotti
+		double totaleProdottiPerStampa = calcolaTotalePerStampa();
+		String totaleProdottiNoIva = "€ " + totaleProdottiPerStampa;
+		Phrase phraseTotaleProdottiNoIva = new Phrase(totaleProdottiNoIva, fontRighe );
+		cella = new PdfPCell(phraseTotaleProdottiNoIva);
+		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tabella.addCell(cella);
+		
+		Phrase phraseProdottiIVA = new Phrase(iva + " %", fontRighe );
+		cella = new PdfPCell(phraseProdottiIVA);
+		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tabella.addCell(cella);
+		
+		double totaleProdottiIvaPerStampa = calcolaTotaleIvaPerStampa();
+		String totaleProdottiIva = "€ " + totaleProdottiIvaPerStampa;
+		Phrase phraseTotaleProdottiIVA = new Phrase(totaleProdottiIva, fontRighe );
+		cella = new PdfPCell(phraseTotaleProdottiIVA);
+		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tabella.addCell(cella);
+		
+		// ------ servizi
+		double totaleServiziPerStampa = totaleServizi;
+		String totaleServiziNoIva = "€ " + totaleServiziPerStampa;
+		Phrase phraseTotaleServiziNoIva = new Phrase(totaleServiziNoIva, fontRighe );
+		cella = new PdfPCell(phraseTotaleServiziNoIva);
+		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tabella.addCell(cella);
+		
+		String ivaServizi = Constants.IVA_SERVIZI + " %";
+		Phrase phraseServiziIVA = new Phrase(ivaServizi, fontRighe );
+		cella = new PdfPCell(phraseServiziIVA);
+		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tabella.addCell(cella);
+		
+		double totaleServiziIvaPerStampa = totaleServiziIva;
+		String totaleServiziIva = "€ " + totaleServiziIvaPerStampa;
+		Phrase phraseTotaleServiziIVA = new Phrase(totaleServiziIva, fontRighe );
+		cella = new PdfPCell(phraseTotaleServiziIVA);
+		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tabella.addCell(cella);
+		
+//		PdfPCell c4 = new PdfPCell();
+//		c1.setBorder(Rectangle.NO_BORDER);
+//		c4.setColspan(6);
+//		tabella.addCell(c4);
+//		
+//		PdfPCell c3 = new PdfPCell(new Phrase(Constants.FIRMA_PER_ACCETTAZIONE, boldFontDati));
+//		c3.setHorizontalAlignment(Element.ALIGN_CENTER);
+//		c3.setColspan(2);
+//		tabella.addCell(c3);
+		
+		return tabella;
+	}
+	
+	private static PdfPTable creaTabellaFirma() throws DocumentException {
 		
 		PdfPTable tabella = new PdfPTable(4);
 		tabella.setWidthPercentage(100);
 		// imposto la dimensione delle colonne
 		try {
 			int[] p = new int[4];
-			p[0] = 2;
-			p[1] = 2;
-			p[2] = 1;
-			p[3] = 2;
+			p[0] = 3;
+			p[1] = 3;
+			p[2] = 2;
+			p[3] = 1;
 			tabella.setWidths(p);
 		} catch (DocumentException e) {
 			logger.error("Errore nell'impostazione delle dimensioni delle colonne della tabella del prodotto: "+e.getStackTrace());
@@ -691,66 +900,53 @@ public class ScrittorePDF {
 		}
 		
 		PdfPCell c1 = new PdfPCell(new Phrase(Constants.FIRMA_PER_ACCETTAZIONE, boldFontDati));
-		c1.setHorizontalAlignment(Element.ALIGN_LEFT);
-//		c1.setGrayFill(0.8f);
+		c1.setHorizontalAlignment(Element.ALIGN_CENTER);
 		tabella.addCell(c1);
-
+		
 		c1 = new PdfPCell();
 		c1.setBorder(Rectangle.NO_BORDER);
-		c1.setColspan(3);
 		tabella.addCell(c1);
-		
-		c1 = new PdfPCell(new Phrase("", boldFontDati));
-		c1.setRowspan(2);
-		tabella.addCell(c1);
-		
-		Phrase phraseEticTotaleIvaEsclusaProdotto = new Phrase(Constants.TOTALE_IVA_ESCLUSA, boldFontEtichetteTabProdotto );
-		PdfPCell cella = new PdfPCell(phraseEticTotaleIvaEsclusaProdotto);
-		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
-		tabella.addCell(cella);
-		Phrase phraseEticIVAProdotto = new Phrase(Constants.IVA, boldFontEtichetteTabProdotto );
-		cella = new PdfPCell(phraseEticIVAProdotto);
-		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
-		tabella.addCell(cella);
-		Phrase phraseEticTotaleProdotto = new Phrase(Constants.TOTALE, boldFontEtichetteTabProdotto );
-		cella = new PdfPCell(phraseEticTotaleProdotto);
-		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
-		tabella.addCell(cella);
-		
-//		DecimalFormat df2 = new DecimalFormat(".##");
-		
-//		double iva = Double.parseDouble(prop.getProperty("iva"));
-		
-		double totalePerStampa = calcolaTotalePerStampa();
-//		double totNoIva = totalePerStampa*100/(100 + iva);
-//		String totaleNoIva = "€ " + df2.format(totNoIva);
-		String totaleNoIva = "€ " + totalePerStampa;
-		Phrase phraseTotaleNoIva = new Phrase(totaleNoIva, fontRighe );
-		cella = new PdfPCell(phraseTotaleNoIva);
-		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
-		tabella.addCell(cella);
-		
-		Phrase phraseIVA = new Phrase(iva + " %", fontRighe );
-		cella = new PdfPCell(phraseIVA);
-		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
-		tabella.addCell(cella);
-		
+
+		PdfPCell c2 = new PdfPCell(new Phrase(Constants.TOTALE.toUpperCase(), boldFontDati));
+		c2.setHorizontalAlignment(Element.ALIGN_CENTER);
+		tabella.addCell(c2);
 		double totaleIvaPerStampa = calcolaTotaleIvaPerStampa();
-		String totaleIva = "€ " + totaleIvaPerStampa;
-//		double totaleIva = totale * ((100 + iva) / 100);
-//		totaleIva = Util.round(totaleIva, 2);
-//		String totaleIvaStr = "€ " + totaleIva;
-		Phrase phraseTotaleIVA = new Phrase(totaleIva, fontRighe );
-		cella = new PdfPCell(phraseTotaleIVA);
-		cella.setHorizontalAlignment(Element.ALIGN_RIGHT);
-		tabella.addCell(cella);
+		if(copiaCliente) {
+			totaleIvaPerStampa = totaleIvaPerStampa + totaleServiziIva;
+		}
+		String totaleIva = "€ " + Util.round(totaleIvaPerStampa,2);
+		Phrase phraseTotaleServiziIVA = new Phrase(totaleIva, fontRighe );
+		c2 = new PdfPCell(phraseTotaleServiziIVA);
+		c2.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		tabella.addCell(c2);
+		
+		for(int i=0; i<4; i++) {
+			c1 = new PdfPCell(new Phrase(" "));
+			c1.setBorder(Rectangle.NO_BORDER);
+			tabella.addCell(c1);
+		}
+
+		c1 = new PdfPCell(new Phrase(" "));
+		c1.setBorder(Rectangle.BOTTOM);
+//		c1.setRowspan(2);
+		tabella.addCell(c1);
+		
+		for(int i=0; i<3; i++) {
+			c1 = new PdfPCell(new Phrase(" "));
+			c1.setBorder(Rectangle.NO_BORDER);
+			tabella.addCell(c1);
+		}
+//		c1 = new PdfPCell();
+//		c1.setColspan(3);
+//		c1.setBorder(Rectangle.NO_BORDER);
+//		tabella.addCell(c1);
 		
 		return tabella;
 	}
 	
 	private static double calcolaTotalePerStampa() {
 		if(copiaCliente) {
-			return Util.round(totale, 2);
+			return Util.round(totaleProdotti, 2);
 		}
 		double totaleAttivita = 0.0;
 		for(int i=0; i<righeTabella.size(); i++) {
@@ -763,7 +959,7 @@ public class ScrittorePDF {
 	
 	private static double calcolaTotaleIvaPerStampa() {
 		if(copiaCliente) {
-			return Util.round(totaleIva, 2);
+			return Util.round(totaleProdottiIva, 2);
 		}
 		double totaleAttivita = 0.0;
 		for(int i=0; i<righeTabella.size(); i++) {
