@@ -140,7 +140,7 @@ public class Portafinestra2anteSerialize {
 		   Map<Integer, Double> tmp = mappaPrezzi.get(row);
 		   for (Map.Entry<Integer, Double> pair : tmp.entrySet()) {
 			   System.out.println(row+" "+pair.getKey()+" "+pair.getValue());
-		       double nuovoPrezzo = Util.round(pair.getValue() * (100 / (100 + Constants.SCONTO_CONCRETE_A_ATTIVITA)), 2);
+			   double nuovoPrezzo = Util.round(pair.getValue() * ((100 - Constants.SCONTO_CONCRETE_A_ATTIVITA) / 100), 2);
 		       pair.setValue(nuovoPrezzo);
 		       System.out.println(row+" "+pair.getKey()+" "+pair.getValue());
 		   }
